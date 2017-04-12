@@ -1,0 +1,14 @@
+x = 6 
+msg "The Current Value Of x: "
+print x 
+newline
+msg "The Current Value Of y: "
+y = 7 
+print y 
+y = x + 4
+z = sqrt(x)
+newline
+msg "The updated Value Of y: "
+print y
+newline 
+print z

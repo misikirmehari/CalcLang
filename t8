@@ -1,0 +1,4 @@
+msg "Hello world"
+newline
+msg "Is new line working"
+
