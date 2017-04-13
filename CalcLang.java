@@ -1,5 +1,6 @@
 /**
   Implement whole process of taking a CalcLang source file and execute the language.
+
 	- Misikir  A . Mehari
 */
 import java.util.Scanner;
@@ -10,7 +11,7 @@ public class CalcLang {
 	    System.out.print("Enter CalcLang file name: ");
 	    String name = keys.nextLine();
 
-			/** Creates a new Instance of the Lexer and 
+			/** Creates a new Instance of the Lexer and
 			pass the name of the source file */
 			Lexer lex = new Lexer(name);
 
