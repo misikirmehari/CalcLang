@@ -1,4 +1,4 @@
-/*  an instance of this class provides methods that produce a
+/*  An instance of this class provides methods that produce a
     sequence of tokens following some Finite State Automata,
     with capability to put back tokens
 
@@ -259,20 +259,5 @@ public class Lexer {
 		System.out.println(message);
 		System.exit(1);
 	}
-
-	// public static void main(String[] args) throws Exception {
-	// 	System.out.print("Enter file name: ");
-	// 	Scanner keys = new Scanner(System.in);
-	// 	String name = keys.nextLine();
-	//
-	// 	Lexer lex = new Lexer(name);
-	// 	Token token;
-	//
-	// 	do {
-	// 		token = lex.getNext();
-	// 		System.out.println(token.toString());
-	// 	} while (!token.getKind().equals("eof"));
-	//
-	// }
 
 }
