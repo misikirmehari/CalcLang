@@ -221,7 +221,7 @@ public class Node {
 
 		if (bif.equals("cos")) {
 
-			return_value = Math.sqrt(return_value);
+			return_value = Math.cos(return_value);
 
 		}
 		else if (bif.equals("sin")) {
@@ -231,7 +231,7 @@ public class Node {
 		}
 		else if (bif.equals("sqrt")) {
 
-			return_value = Math.cos(return_value);
+			return_value = Math.sqrt(return_value);
 
 		}
 		else if (bif.equals("exp")) {
