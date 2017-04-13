@@ -1,3 +1,10 @@
+/*
+    This class provides a memory for CalcLang where
+		variables are stored using HashMap and retrieved
+		via the built in get method.
+
+	
+*/
 import java.util.HashMap;
 
 public class memory {

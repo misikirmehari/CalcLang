@@ -1,4 +1,7 @@
+/**
+  This class provides Tokens
 
+*/
 
 public class Token
 {

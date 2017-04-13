@@ -1,4 +1,7 @@
-
+/*  a Node holds one node of a parse tree
+    with several pointers to children used
+    depending on the kind of node
+*/
 
 import java.util.*;
 import java.io.*;

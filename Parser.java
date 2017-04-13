@@ -1,3 +1,9 @@
+/*
+    This class provides a recursive descent parser of CalcLang
+    creating a parse tree.
+
+*/
+
 import java.util.*;
 import java.io.*;
 

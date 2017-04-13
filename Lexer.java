@@ -1,3 +1,9 @@
+/*  an instance of this class provides methods that produce a
+    sequence of tokens following some Finite State Automata,
+    with capability to put back tokens
+
+*/
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
