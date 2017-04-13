@@ -136,6 +136,9 @@ public class Node {
 	}// draw
 
 	// ----------------------------------------- Execute --------------------------------------------------//
+
+	/** This method is used to execute the program using the parse tree
+		obtained from the parser */
 	public void execute() {
 
 		if (this.kind.equals("eof")) {
@@ -143,7 +146,8 @@ public class Node {
 			System.out.print("end of file reached");
 			return;
 
-		} else if (this.kind.equals("statements")) {
+		}
+		else if (this.kind.equals("statements")) {
 
 			if (second.kind.equals("eof")) {
 				if (first.kind.equals("statement")) {
@@ -153,7 +157,8 @@ public class Node {
 				first.execute();
 				second.execute();
 			}
-		} else if (this.kind.equals("statement")) {
+		}
+		else if (this.kind.equals("statement")) {
 
 			if (info.matches("msg")) {
 
@@ -161,11 +166,13 @@ public class Node {
 					System.out.print(second.info);
 				}
 
-			} else if (info.matches("newline")) {
+			}
+			else if (info.matches("newline")) {
 
 				System.out.println();
 
-			} else if (info.matches("input")) {
+			}
+			else if (info.matches("input")) {
 
 				String consoleMessage = "";
 				String id = "";
@@ -187,14 +194,16 @@ public class Node {
 
 				consoleInput.close();
 
-			} else if (info.matches("print")) {
+			}
+			else if (info.matches("print")) {
 
 				if (second != null) {
 					double return_value = second.evaluate();
 					System.out.print(return_value);
 				}
 
-			} else if (info.matches("id") && second != null && second.info.equals("=") && third != null
+			}
+			else if (info.matches("id") && second != null && second.info.equals("=") && third != null
 					&& third.kind.equals("expression")) {
 
 				String id = first.info;
@@ -204,7 +213,43 @@ public class Node {
 		}
 	}
 
+	// ----------------------------------------- Helper Methods --------------------------------------------------//
+
+	private double builtInFunctions(Double num, String bif) {
+
+		double return_value = num;
+
+		if (bif.equals("cos")) {
+
+			return_value = Math.sqrt(return_value);
+
+		}
+		else if (bif.equals("sin")) {
+
+			return_value = Math.sin(num);
+
+		}
+		else if (bif.equals("sqrt")) {
+
+			return_value = Math.cos(return_value);
+
+		}
+		else if (bif.equals("exp")) {
+
+			return_value = Math.exp(return_value);
+		}
+		else {
+			System.out.println("Error!");
+			System.exit(1);
+		}
+
+		return return_value;
+
+	}
+
 	// ----------------------------------------- Evaluate --------------------------------------------------//
+/** This method evaluates expression , term and factor
+and returns a value to the execute method */
 	private double evaluate() {
 
 		double return_value = 0;
@@ -213,41 +258,51 @@ public class Node {
 
 			if (second == null) {
 				return_value = first.evaluate();
-			} else {
+			}
+			else {
 				if (second.kind.equals("single") && second.info.equals("+")) {
 					return_value = first.evaluate() + third.evaluate();
-				} else if (second.kind.equals("single") && second.info.equals("-")) {
+				}
+				else if (second.kind.equals("single") && second.info.equals("-")) {
 					return_value = first.evaluate() - third.evaluate();
 
 				}
 			}
 
-		} else if (this.kind.equals("term")) {
+		}
+		else if (this.kind.equals("term")) {
 
 			if (second == null) {
 				return_value = first.evaluate();
-			} else {
+			}
+			else {
 				if (second.kind.equals("single") && second.info.equals("*")) {
 					return_value = first.evaluate() * third.evaluate();
-				} else if (second.kind.equals("single") && second.info.equals("/")) {
+				}
+				else if (second.kind.equals("single") && second.info.equals("/")) {
 					return_value = first.evaluate() / third.evaluate();
 
 				}
 			}
 
-		} else if (this.kind.equals("factor")) {
+		}
+		else if (this.kind.equals("factor")) {
 
 			if (second == null && first.kind.equals("num")) {
 				return_value = Double.parseDouble(first.info);
-			} else if (second == null && first.kind.equals("id")) {
+			}
+			else if (second == null && first.kind.equals("id")) {
 				return_value = (double) memory.hash.get(first.info);
-			} else if (second != null && first.kind.equals("bif")) {
+			}
+			else if (second != null && first.kind.equals("bif")) {
 				String function_type = first.info;
 				return_value = second.evaluate();
 				return_value = builtInFunctions(return_value, function_type);
-			} else if (first.kind.equals("expression")) {
+			}
+			else if (first.kind.equals("expression")) {
 				return_value = first.evaluate();
-			} else if (first.kind.equals("single") && first.info.equals("-") && second != null
+			}
+			else if (first.kind.equals("single") && first.info.equals("-") && second != null
 					&& second.kind.equals("factor")) {
 				return_value = (-1) * second.evaluate();
 			}
@@ -257,34 +312,6 @@ public class Node {
 		return return_value;
 	}
 
-	// ----------------------------------------- Helper Methods --------------------------------------------------//
 
-	private double builtInFunctions(Double num, String bif) {
-
-		double return_value = num;
-
-		if (bif.equals("sqrt")) {
-
-			return_value = Math.sqrt(return_value);
-
-		} else if (bif.equals("sin")) {
-
-			return_value = Math.sin(num);
-
-		} else if (bif.equals("cos")) {
-
-			return_value = Math.cos(return_value);
-
-		} else if (bif.equals("exp")) {
-
-			return_value = Math.exp(return_value);
-		} else {
-			System.out.println("Invalid BIF");
-			System.exit(1);
-		}
-
-		return return_value;
-
-	}
 
 }// Node

@@ -15,21 +15,9 @@ public class Parser {
 		lex = lexer;
 	}
 
-	// public static void main(String[] args) throws Exception {
-	// 	System.out.print("Enter file name: ");
-	// 	Scanner keys = new Scanner(System.in);
-	// 	String name = keys.nextLine();
-	// 	Lexer lex = new Lexer(name);
-	// 	Parser parser = new Parser(lex);
-	//
-	// 	Node root = parser.parseStatements(); // parser.parseProgram();
-	//
-	// 	TreeViewer viewer = new TreeViewer("Parse Tree", 0, 0, 800, 500, root);
-	//
-	// }
-
+/** The Parse Tree starts from this method and recursively goes through
+		the whole file */
 	public Node parseStatements() {
-	//	System.out.println("-----> parsing statements:");
 		Node first = parseStatement();
 		Node second = null;
 		Token token = lex.getToken();
@@ -45,8 +33,8 @@ public class Parser {
 		return new Node("statements", first, second, null);
 	}
 
+/** Parse statements */
 	private Node parseStatement() {
-	//	System.out.println("-----> parsing statement:");
 		Token token = lex.getToken();
 		Node first = null;
 		Node second = null;
@@ -137,10 +125,9 @@ public class Parser {
 
 		return new Node (token);
 	}
-
+/** Parse expression */
 	  private Node parseExpression() {
-	        //System.out.println("-----> parsing expression:");
-	        Token token1 = lex.getToken();
+	         Token token1 = lex.getToken();
 
 	        if(token1.isKind("num") || token1.isKind("id")){
 	            Token token2 = lex.getToken();
@@ -190,9 +177,8 @@ public class Parser {
 	    }
 
 	  private Node parseTerm() {
-		//System.out.println("-----> parsing terms:");
-		Token token1 = lex.getToken();
 
+		Token token1 = lex.getToken();
 		if (token1.isKind("num") || token1.isKind("id")) {
 			Token token2 = lex.getToken();
 
@@ -234,8 +220,6 @@ public class Parser {
 	}
 
 	private Node parseFactor() {
-		//System.out.println("-----> parsing factors:");
-
 		Token token1 = lex.getToken();
 
 		if (token1.isKind("id")) {
