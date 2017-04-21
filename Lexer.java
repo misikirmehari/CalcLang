@@ -1,6 +1,6 @@
 /*  An instance of this class provides methods that produce a
-    sequence of tokens following some Finite State Automata,
-    with capability to put back tokens
+sequence of tokens following some Finite State Automata,
+with capability to put back tokens
 
 */
 
@@ -13,9 +13,9 @@ public class Lexer {
 
 	static String[] keywords = {"msg", "print", "newline", "input"};
 
-    private static String[] builtInFunctions = { "sqrt", "exp", "sin", "cos"};
+	private static String[] builtInFunctions = { "sqrt", "exp", "sin", "cos"};
 
-    String margin = "";
+	String margin = "";
 
 	// holds any number of tokens that have been put back
 	private Stack<Token> stack;
@@ -78,7 +78,7 @@ public class Lexer {
 						data += (char) sym;
 
 					}	else if (sym == '\"') {
-							state = 7;
+						state = 7;
 
 					} else if (sym == -1) {// eof
 						state = 9;
@@ -86,15 +86,6 @@ public class Lexer {
 					} else {
 						error("Error in lexical analysis phase with symbol " + sym + " in state " + state);
 					}
-
-
-					} else if (sym == '.') {
-						state = 5;
-						data += ".";
-
-
-
-
 
 				} // state 1 ==================================================
 
@@ -110,11 +101,12 @@ public class Lexer {
 					}
 				} // =====================================================
 				else if (state == 5) {
-					if (digit(sym)) {
+					if(digit(sym)) {
 						state = 4;
 						data += (char) sym;
 					} else {
-						error("error in FA in state 5---must have digit " + "after .");
+						done = true;
+						putBackSymbol(sym);
 					}
 				} // =====================================================
 				else if (state == 3) {
@@ -122,8 +114,11 @@ public class Lexer {
 					putBackSymbol(sym);
 				} // =====================================================
 				else if (state == 4) {
-					if (digit(sym)) {
-						// stay in state 6
+					if(digit(sym)){
+						state = 4;
+						data += (char) sym;
+					} else if(sym == (char) '.'){
+						state = 5;
 						data += (char) sym;
 					} else {
 						done = true;
@@ -144,7 +139,7 @@ public class Lexer {
 					done = true;
 					putBackSymbol(sym);
 				} // =====================================================
-//
+				//
 
 				else if (state == 9) {
 					done = true;
@@ -160,16 +155,16 @@ public class Lexer {
 
 			if (state == 2) {// reserved word, bif, or user-defined id
 				for (int k = 0; k < keywords.length; k++)
-					if (keywords[k].equals(data)) {
-						token = new Token(data, "");
-						return token;
-					}
+				if (keywords[k].equals(data)) {
+					token = new Token(data, "");
+					return token;
+				}
 
 				for (int k = 0; k < builtInFunctions.length; k++)
-                    if (builtInFunctions[k].equals(data)) {
-                        token = new Token("bif", data);
-                        return token;
-                    }
+				if (builtInFunctions[k].equals(data)) {
+					token = new Token("bif", data);
+					return token;
+				}
 				token = new Token("id", data);
 				return token;
 			}
@@ -234,7 +229,7 @@ public class Lexer {
 			lookahead = sym;
 		} else {
 			System.out
-					.println("Oops, already have a lookahead " + lookahead + " when trying to put back symbol " + sym);
+			.println("Oops, already have a lookahead " + lookahead + " when trying to put back symbol " + sym);
 			System.exit(1);
 		}
 	}// putBackSymbol
@@ -259,5 +254,20 @@ public class Lexer {
 		System.out.println(message);
 		System.exit(1);
 	}
+
+	// public static void main(String[] args) throws Exception {
+	// 	System.out.print("Enter file name: ");
+	// 	Scanner keys = new Scanner(System.in);
+	// 	String name = keys.nextLine();
+	//
+	// 	Lexer lex = new Lexer(name);
+	// 	Token token;
+	//
+	// 	do {
+	// 		token = lex.getNext();
+	// 		System.out.println(token.toString());
+	// 	} while (!token.getKind().equals("eof"));
+	//
+	// }
 
 }

@@ -1,3 +1,0 @@
-input "?" x
-z = x + 3
-print z

@@ -1,0 +1,4 @@
+msg "Testing random statements #4"
+input "?" x
+z = x + 3
+print z

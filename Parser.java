@@ -1,6 +1,6 @@
 /*
-    This class provides a recursive descent parser of CalcLang
-    creating a parse tree.
+This class provides a recursive descent parser of CalcLang
+creating a parse tree.
 
 */
 
@@ -15,9 +15,10 @@ public class Parser {
 		lex = lexer;
 	}
 
-/** The Parse Tree starts from this method and recursively goes through
-		the whole file */
+	/** The Parse Tree starts from this method and recursively goes through
+	the whole file */
 	public Node parseStatements() {
+
 		Node first = parseStatement();
 		Node second = null;
 		Token token = lex.getToken();
@@ -25,7 +26,8 @@ public class Parser {
 		if (token.isKind("eof")) {
 			second = new Node(token);
 			return new Node("statements", first, second, null);
-		} else {
+		}
+		else {
 			lex.putBack(token);
 			second = parseStatements();
 		}
@@ -33,8 +35,8 @@ public class Parser {
 		return new Node("statements", first, second, null);
 	}
 
-/** Parse statements */
 	private Node parseStatement() {
+
 		Token token = lex.getToken();
 		Node first = null;
 		Node second = null;
@@ -50,18 +52,24 @@ public class Parser {
 			if (token2.matches("single", "=")) {
 
 				second = new Node(token2);
+
 				third = parseExpression();
 
 				return new Node("statement", info ,first, second, third);
-			} else {
+			}
+			else {
 				lex.putBack(token);
 				first = parseExpression();
 				return new Node("statement", info, first, null, null);
 			}
 
-		} else if (token.isKind("msg")) {
+		}
+
+		else if (token.isKind("msg")) {
 			info = "msg";
+
 			first = new Node(token);
+
 			Token token1 = lex.getToken();
 
 			errorCheck(token1, "string");
@@ -70,44 +78,94 @@ public class Parser {
 
 			return new Node("statement", info ,first, second, null);
 
-		} else if (token.isKind("print")) {
+		}
+
+		else if (token.isKind("print")) {
+
 			info = "print";
+
 			Token token1 = lex.getToken();
 
 
 			if (token1.isKind("id")) {
+
 				lex.putBack(token1);
 
 				first = new Node (token);
 
 				second = parseExpression();
+
 				return new Node("statement",info, first, second, null);
 			}
+
 			else if (token1.isKind("num")) {
+
 				lex.putBack(token1);
 
 				first = new Node (token);
 
 				second = parseExpression();
 
-				return new Node("statement", info,first, second, null);
+				return new Node("statement", info ,first, second, null);
 			}
 
-		} else if (token.isKind("newline")) {
+			else if(token1.isKind("bif")){
+
+				lex.putBack(token1);
+
+				first = new Node (token);
+
+				second = parseExpression();
+
+				return new Node("statement", info ,first, second, null);
+
+			}
+
+			else if (token1.matches("single","(")){
+
+				lex.putBack(token1);
+
+				first = new Node (token);
+
+				second = parseExpression();
+
+				return new Node("statement", info ,first, second, null);
+
+
+			}
+
+
+			else if (token1.matches("single","-")) {
+
+				lex.putBack(token1);
+
+				first = new Node (token);
+
+				second = parseExpression();
+
+				return new Node("statement", info ,first, second ,null);
+			}
+
+		}
+
+
+		else if (token.isKind("newline")) {
 
 			info = "newline";
 			first = new Node(token);
 
 			return new Node("statement",info, first, null, null);
 
-		} else if (token.isKind("input")) {
+		}
+
+
+		else if (token.isKind("input")) {
 
 			info = "input";
+
 			first = new Node (token);
 
 			Token token1 = lex.getToken();
-
-			errorCheck(token1, "string");
 
 			second = new Node(token1);
 
@@ -125,101 +183,50 @@ public class Parser {
 
 		return new Node (token);
 	}
-/** Parse expression */
-	  private Node parseExpression() {
-	         Token token1 = lex.getToken();
 
-	        if(token1.isKind("num") || token1.isKind("id")){
-	            Token token2 = lex.getToken();
-	            if(!token2.isKind("single")){
-	                lex.putBack(token2);
-	                lex.putBack(token1);
-	                Node first = parseTerm();
-	                return new Node("expression",first, null, null);
-	            }else{
-	                if(token2.matches("single", "*") || token2.matches("single", "/") || token2.matches("single", ")")){
-	                    lex.putBack(token2);
-	                    lex.putBack(token1);
-	                    Node first = parseTerm();
-	                    return new Node("expression",first, null, null);
-	                }else{
+	private Node parseExpression() {
 
-	                	lex.putBack(token1);
-
-	                    Node first = parseTerm();
-
-	                    Node second = parseExpression();
-
-	                    return new Node("expression",first, new Node(token2), second);
-	                }
-
-	            }
-	        }
-
-	        else if(token1.isKind("single")){
-	            lex.putBack(token1);
-
-	            Node first = parseTerm();
-
-	            return new Node("expression",first, null, null);
-	        }
-
-	        else if(token1.isKind("bif")){
-
-	        	lex.putBack(token1);
-
-	        	Node first = parseTerm();
-
-	        	return new Node("expression",first, null, null);
-	        }
-
-	        return new Node(token1);
-	    }
-
-	  private Node parseTerm() {
+		Node first = parseTerm();
 
 		Token token1 = lex.getToken();
-		if (token1.isKind("num") || token1.isKind("id")) {
-			Token token2 = lex.getToken();
 
-			if (!token2.isKind("single")) {
-				lex.putBack(token2);
-				lex.putBack(token1);
-				Node first = parseFactor();
-				return new Node("term", first, null, null);
-			}
 
-			else if (token2.getDetails().equals(")")) {
-				lex.putBack(token2);
-				lex.putBack(token1);
-				Node first = parseFactor();
-				return new Node("term", first, null, null);
-			}
+		if( token1.matches("single", "+") || token1.matches("single","-") ) {
 
-			else {
-				lex.putBack(token1);
-				Node first = parseFactor();
-				Node second = parseTerm();
-				return new Node("term", first, new Node(token2), second);
-			}
+			Node second = parseExpression();
+
+			return new Node("expression", first, new Node(token1) , second );
 		}
 
-		else if (token1.isKind("single")) {
-			lex.putBack(token1);
-			Node first = parseFactor();
-			return new Node("term", first, null, null);
-		}
+		lex.putBack(token1);
 
-		else if (token1.isKind("bif")) {
-			lex.putBack(token1);
-			Node first = parseFactor();
-			return new Node("term", first, null, null);
-		}
-
-		return new Node(token1);
+		return new Node ("expression", first, null, null);
 	}
 
-	private Node parseFactor() {
+
+	private Node parseTerm(){
+
+		Node first = parseFactor();
+
+		Token token = lex.getToken();
+
+		if( token.matches("single","*") || token.matches("single","/")){
+
+			Node second = parseTerm();
+
+			return new Node("term", first, new Node(token), second);
+
+		}
+
+		lex.putBack(token);
+
+		return new Node("term", first, null, null);
+
+	}
+
+
+private Node parseFactor() {
+
 		Token token1 = lex.getToken();
 
 		if (token1.isKind("id")) {
@@ -227,43 +234,67 @@ public class Parser {
 			Token token2 = lex.getToken();
 
 			if (!token2.matches("single", "(")) {
+
 				lex.putBack(token2);
+
 				return new Node("factor", new Node(token1), null, null);
-			} else {
+			}
+
+			else {
+
 				errorCheck(token2, "single", "(");
+
 				Node first = parseExpression();
+
 				Token token3 = lex.getToken();
+
 				errorCheck(token3, "single", ")");
+
 				return new Node("factor", first, null, null);
 			}
 
-		} else if (token1.isKind("num")) {
+		}
+
+		else if (token1.isKind("num")) {
 
 			return new Node("factor", new Node(token1), null, null);
 
-		} else if (token1.matches("single", "(")) {
+		}
 
-			Node first = new Node(token1);
-			Node second = parseExpression();
+		else if (token1.matches("single", "(")) {
+
+			Node first = parseExpression();
+
 			Token token2 = lex.getToken();
+
 			errorCheck(token2, "single", ")");
-			Node third = new Node(token2);
-			return new Node("factor", first, second, third);
+
+			return new Node("factor", first, null , null);
 
 		} else if (token1.matches("single", "-")) {
 
 			Node first = new Node(token1);
+
 			Node second = parseFactor();
+
 			return new Node("factor", first, second, null);
 
-		} else if (token1.isKind("bif")) {
+		}
+
+		else if (token1.isKind("bif")) {
 
 			Node first = new Node(token1);
+
 			Token token = lex.getToken();
+
 			errorCheck(token, "single", "(");
+
 			Node second = parseExpression();
+
 			Token token2 = lex.getToken();
+
 			errorCheck(token2, "single", ")");
+
 			return new Node("factor", first, second, null);
 
 		}

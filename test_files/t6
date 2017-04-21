@@ -1,0 +1,57 @@
+msg "Testing simple and Compound Arithmetic Operations"
+newline
+msg " The variables are a = 3 , b = 5 , x = 7 , y = 10" 
+newline
+a = 3 
+b = 5 
+x = 7 
+y = 10
+
+c = a + b 
+msg " For c = a + b , the value of c = "
+print c 
+newline
+
+c = a - b
+msg " For c = a - b  , the value of c = "
+print c 
+newline
+
+c = a * b 
+msg " For c = a * b , the value of c = "
+print c 
+newline
+
+c = a / b 
+msg " For c = a / b  , the value of c = "
+print c 
+newline
+
+c = a + b + x + y 
+msg " For c = a + b + x + y  , the value of c = "
+print c 
+newline
+
+c = a - b - x - y 
+msg " For c = a - b - x - y  , the value of c = "
+print c 
+newline
+
+c = a * b * x * y 
+msg " For c = a * b * x * y  , the value of c = "
+print c 
+newline
+
+c = a / b / x / y 
+msg " For c = a / b / x / y ,  the value of c = "
+print c 
+newline
+
+c = a + b - x * y 
+msg " For c = a + b - x * y  , the value of c = "
+print c 
+newline
+
+
+
+  

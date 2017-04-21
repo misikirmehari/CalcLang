@@ -1,4 +1,4 @@
 msg "Hello world"
 newline
-msg "Is new line working"
+msg "new line is working"
 

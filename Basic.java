@@ -9,14 +9,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Basic extends JFrame implements Runnable, KeyListener,
-                                             MouseListener,
-                                             MouseMotionListener,
-                                             WindowListener
+MouseListener,
+MouseMotionListener,
+WindowListener
 {
   protected static int FPS = 50; // desired frames per second
 
   private int stepNumber;
-
+  
   // part of the basic framework
   private Thread theThread;	//to control the animation
 
@@ -47,7 +47,7 @@ public class Basic extends JFrame implements Runnable, KeyListener,
 
     addKeyListener(this);
     // setFocusable(true);
-//    requestFocus();
+    //    requestFocus();
     addMouseListener(this);
     addMouseMotionListener(this);
     addWindowListener(this);
@@ -72,202 +72,202 @@ public class Basic extends JFrame implements Runnable, KeyListener,
       rob.mouseMove( ulcX+pixelWidth/2, ulcY+pixelHeight/2 );
     }catch(Exception e){}
 
-    if (theThread == null)
+      if (theThread == null)
       theThread = new Thread(this);
-    theThread.start();
-  }
+      theThread.start();
+    }
 
-  public void run()
-  {
-    while (true)
+    public void run()
     {
-      stepNumber++;
+      while (true)
+      {
+        stepNumber++;
 
-      long startTime = System.nanoTime();
+        long startTime = System.nanoTime();
 
-      render();
-      paintScreen();
+        render();
+        paintScreen();
 
-      long stopTime = System.nanoTime();
+        long stopTime = System.nanoTime();
 
-      double elapsed = (stopTime-startTime)/1000000.0;  // milliseconds
+        double elapsed = (stopTime-startTime)/1000000.0;  // milliseconds
 
-      int waitTime = 1000/FPS - (int) Math.round( elapsed );
-      if( waitTime < 1 )
+        int waitTime = 1000/FPS - (int) Math.round( elapsed );
+        if( waitTime < 1 )
         waitTime = 1;
 
-      try {
-        Thread.sleep(waitTime);
+        try {
+          Thread.sleep(waitTime);
+        }
+        catch (InterruptedException ie)
+        {System.err.println("OOPS");}
       }
-      catch (InterruptedException ie)
-      {System.err.println("OOPS");}
     }
-  }
 
-  private void render()
-  {
-    if( dbImage == null )
-    {// create the buffer
-      dbImage = createImage( pixelWidth, pixelHeight );
+    private void render()
+    {
       if( dbImage == null )
-      {
-        System.out.println("dbImage is null???");
-        return;
+      {// create the buffer
+        dbImage = createImage( pixelWidth, pixelHeight );
+        if( dbImage == null )
+        {
+          System.out.println("dbImage is null???");
+          return;
+        }
+        else
+        {// dbg is created, tell Camera
+          dbg = dbImage.getGraphics();
+          Camera.setGraphicsContext( dbg );
+        }
       }
-      else
-      {// dbg is created, tell Camera
-        dbg = dbImage.getGraphics();
-        Camera.setGraphicsContext( dbg );
-      }
+
+      // clear the background of entire window
+      dbg.setColor( backgroundColor );
+      dbg.fillRect(0,0,pixelWidth,pixelHeight);
+
+      // give app a chance to update its instance variables
+      // and then draw stuff to dbg
+
+      step();
     }
 
-    // clear the background of entire window
-    dbg.setColor( backgroundColor );
-    dbg.fillRect(0,0,pixelWidth,pixelHeight);
-
-    // give app a chance to update its instance variables
-    // and then draw stuff to dbg
-
-    step();
-  }
-
-  private void paintScreen()
-  {
-    Graphics gr;
-    try{
-      gr = this.getGraphics();
-      if( gr != null && dbImage != null )
+    private void paintScreen()
+    {
+      Graphics gr;
+      try{
+        gr = this.getGraphics();
+        if( gr != null && dbImage != null )
         gr.drawImage(dbImage,0,0,null);
-      Toolkit.getDefaultToolkit().sync();  // maybe not needed?
-      gr.dispose();
-    }
-    catch(Exception e)
-    {
-      System.out.println("graphics context error" + e );
-      System.exit(1);
-    }
-  }
-
-  // override this method with code to display stuff
-  // and update app instance variables
-  public void step()
-  {
-    System.out.println("Step number: " + getStepNumber() );
-  }
-
-  public int getStepNumber()
-  {
-    return stepNumber;
-  }
-
-  // implement KeyListener:
-  // ******************************************************************
-  public void keyPressed(KeyEvent e){}
-  public void keyReleased(KeyEvent e){}
-  public void keyTyped(KeyEvent e){}
-
-  // implement MouseListener:
-  // ******************************************************************
-  public void mouseClicked(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-  public void mouseEntered(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-  public void mouseExited(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-  public void mousePressed(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-  public void mouseReleased(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-
-  // implement MouseMotionListener:
-  // ******************************************************************
-  public void mouseDragged(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-  public void mouseMoved(MouseEvent e)
-  {
-    updateMouse(e);
-  }
-
-  private void updateMouse( MouseEvent e )
-  {
-    int ix = e.getX(), iy = e.getY();
-
-    // determine which camera this mouse event hits
-    // and compute mouseX, mouseY in that camera's graph paper coords
-
-    whichCamera = -1;
-    Camera ac=null, temp;
-
-    for( int k=0; k<cameras.size(); k++ )
-    {
-      temp = cameras.get(k);
-      if( temp.hits(ix,iy) )
+        Toolkit.getDefaultToolkit().sync();  // maybe not needed?
+        gr.dispose();
+      }
+      catch(Exception e)
       {
-        ac = temp;
-        whichCamera = k;
+        System.out.println("graphics context error" + e );
+        System.exit(1);
       }
     }
 
-    if( whichCamera == -1 )
+    // override this method with code to display stuff
+    // and update app instance variables
+    public void step()
     {
-      mouseX=0;  mouseY=0;
-      whichCamera = -1;
-    }
-    else
-    {// mouse event happened in an active camera, update coords for that cam
-      mouseX = ac.invMapX( ix );
-      mouseY = ac.invMapY( iy );
+      System.out.println("Step number: " + getStepNumber() );
     }
 
-  }
+    public int getStepNumber()
+    {
+      return stepNumber;
+    }
 
-  // -----------------------------------------------------------------
-  // These can be called, but don't override
+    // implement KeyListener:
+    // ******************************************************************
+    public void keyPressed(KeyEvent e){}
+      public void keyReleased(KeyEvent e){}
+        public void keyTyped(KeyEvent e){}
 
-  protected double getMouseX()
-  {
-    return mouseX;
-  }
+          // implement MouseListener:
+          // ******************************************************************
+          public void mouseClicked(MouseEvent e)
+          {
+            updateMouse(e);
+          }
+          public void mouseEntered(MouseEvent e)
+          {
+            updateMouse(e);
+          }
+          public void mouseExited(MouseEvent e)
+          {
+            updateMouse(e);
+          }
+          public void mousePressed(MouseEvent e)
+          {
+            updateMouse(e);
+          }
+          public void mouseReleased(MouseEvent e)
+          {
+            updateMouse(e);
+          }
 
-  protected double getMouseY()
-  {
-    return mouseY;
-  }
+          // implement MouseMotionListener:
+          // ******************************************************************
+          public void mouseDragged(MouseEvent e)
+          {
+            updateMouse(e);
+          }
+          public void mouseMoved(MouseEvent e)
+          {
+            updateMouse(e);
+          }
 
-  protected int getMouseCamera()
-  {
-    return whichCamera;
-  }
+          private void updateMouse( MouseEvent e )
+          {
+            int ix = e.getX(), iy = e.getY();
 
-  // set background color of entire window
-  protected void setBackgroundColor( Color color )
-  {
-    backgroundColor = color;
-  }
+            // determine which camera this mouse event hits
+            // and compute mouseX, mouseY in that camera's graph paper coords
 
-  // implement WindowListener:
-  // ******************************************************************^M
-  public void windowActivated(WindowEvent e){}
-  public void windowClosed(WindowEvent e){}
-  public void windowClosing(WindowEvent e)
-  {
-    System.exit(0);
-  } // end of windowClosing()
-  public void windowDeactivated(WindowEvent e){}
-  public void windowDeiconified(WindowEvent e){}
-  public void windowIconified(WindowEvent e){}
-  public void windowOpened(WindowEvent e){}
+            whichCamera = -1;
+            Camera ac=null, temp;
 
-}
+            for( int k=0; k<cameras.size(); k++ )
+            {
+              temp = cameras.get(k);
+              if( temp.hits(ix,iy) )
+              {
+                ac = temp;
+                whichCamera = k;
+              }
+            }
+
+            if( whichCamera == -1 )
+            {
+              mouseX=0;  mouseY=0;
+              whichCamera = -1;
+            }
+            else
+            {// mouse event happened in an active camera, update coords for that cam
+              mouseX = ac.invMapX( ix );
+              mouseY = ac.invMapY( iy );
+            }
+
+          }
+
+          // -----------------------------------------------------------------
+          // These can be called, but don't override
+
+          protected double getMouseX()
+          {
+            return mouseX;
+          }
+
+          protected double getMouseY()
+          {
+            return mouseY;
+          }
+
+          protected int getMouseCamera()
+          {
+            return whichCamera;
+          }
+
+          // set background color of entire window
+          protected void setBackgroundColor( Color color )
+          {
+            backgroundColor = color;
+          }
+
+          // implement WindowListener:
+          // ******************************************************************^M
+          public void windowActivated(WindowEvent e){}
+            public void windowClosed(WindowEvent e){}
+              public void windowClosing(WindowEvent e)
+              {
+                System.exit(0);
+              } // end of windowClosing()
+              public void windowDeactivated(WindowEvent e){}
+                public void windowDeiconified(WindowEvent e){}
+                  public void windowIconified(WindowEvent e){}
+                    public void windowOpened(WindowEvent e){}
+
+                    }

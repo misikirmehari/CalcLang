@@ -1,3 +1,4 @@
+msg "Testing random statements #2"
 input "enter first: " a
 b = 3.14
 c = 1 + b*-a

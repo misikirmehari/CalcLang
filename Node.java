@@ -1,6 +1,6 @@
 /*  a Node holds one node of a parse tree
-    with several pointers to children used
-    depending on the kind of node
+with several pointers to children used
+depending on the kind of node
 */
 
 import java.util.*;
@@ -13,7 +13,7 @@ public class Node {
 	private int id;
 	private String kind; // non-terminal or terminal category for the node
 	private String info; // extra information about the node such as
-							// the actual identifier for an I
+	// the actual identifier for an I
 
 	// references to children in the parse tree
 	private Node first, second, third;
@@ -63,11 +63,11 @@ public class Node {
 	private Node[] getChildren() {
 		int count = 0;
 		if (first != null)
-			count++;
+		count++;
 		if (second != null)
-			count++;
+		count++;
 		if (third != null)
-			count++;
+		count++;
 		Node[] children = new Node[count];
 		int k = 0;
 		if (first != null) {
@@ -100,7 +100,7 @@ public class Node {
 
 		String text = kind;
 		if (!info.equals(""))
-			text += "(" + info + ")";
+		text += "(" + info + ")";
 		cam.drawHorizCenteredText(text, x, y);
 
 		// positioning of children depends on how many
@@ -138,7 +138,7 @@ public class Node {
 	// ----------------------------------------- Execute --------------------------------------------------//
 
 	/** This method is used to execute the program using the parse tree
-		obtained from the parser */
+	obtained from the parser */
 	public void execute() {
 
 		if (this.kind.equals("eof")) {
@@ -171,8 +171,7 @@ public class Node {
 
 				System.out.println();
 
-			}
-			else if (info.matches("input")) {
+			} else if (info.matches("input")) {
 
 				String consoleMessage = "";
 				String id = "";
@@ -192,7 +191,6 @@ public class Node {
 
 				memory.insert(id, input);
 
-				consoleInput.close();
 
 			}
 			else if (info.matches("print")) {
@@ -204,7 +202,7 @@ public class Node {
 
 			}
 			else if (info.matches("id") && second != null && second.info.equals("=") && third != null
-					&& third.kind.equals("expression")) {
+			&& third.kind.equals("expression")) {
 
 				String id = first.info;
 				double num = third.evaluate();
@@ -248,8 +246,8 @@ public class Node {
 	}
 
 	// ----------------------------------------- Evaluate --------------------------------------------------//
-/** This method evaluates expression , term and factor
-and returns a value to the execute method */
+	/** This method evaluates expression , term and factor
+	and returns a value to the execute method */
 	private double evaluate() {
 
 		double return_value = 0;
@@ -259,26 +257,37 @@ and returns a value to the execute method */
 			if (second == null) {
 				return_value = first.evaluate();
 			}
+
 			else {
+
 				if (second.kind.equals("single") && second.info.equals("+")) {
+
 					return_value = first.evaluate() + third.evaluate();
 				}
+
 				else if (second.kind.equals("single") && second.info.equals("-")) {
+
 					return_value = first.evaluate() - third.evaluate();
 
 				}
 			}
 
 		}
+
 		else if (this.kind.equals("term")) {
 
 			if (second == null) {
+
 				return_value = first.evaluate();
 			}
+
 			else {
+
 				if (second.kind.equals("single") && second.info.equals("*")) {
 					return_value = first.evaluate() * third.evaluate();
+
 				}
+
 				else if (second.kind.equals("single") && second.info.equals("/")) {
 					return_value = first.evaluate() / third.evaluate();
 
@@ -286,24 +295,36 @@ and returns a value to the execute method */
 			}
 
 		}
+
 		else if (this.kind.equals("factor")) {
 
-			if (second == null && first.kind.equals("num")) {
+			if ( second == null && first.kind.equals("num")) {
+
 				return_value = Double.parseDouble(first.info);
 			}
-			else if (second == null && first.kind.equals("id")) {
-				return_value = (double) memory.hash.get(first.info);
+
+			else if (first.kind.matches("id")) {
+
+				return_value = (double)memory.hash.get(first.info);
 			}
+
 			else if (second != null && first.kind.equals("bif")) {
+
 				String function_type = first.info;
+
 				return_value = second.evaluate();
+
 				return_value = builtInFunctions(return_value, function_type);
 			}
+
+
 			else if (first.kind.equals("expression")) {
+
 				return_value = first.evaluate();
 			}
-			else if (first.kind.equals("single") && first.info.equals("-") && second != null
-					&& second.kind.equals("factor")) {
+
+			else if (first.kind.equals("single") && first.info.equals("-") && second != null && second.kind.equals("factor")) {
+
 				return_value = (-1) * second.evaluate();
 			}
 
@@ -311,6 +332,7 @@ and returns a value to the execute method */
 
 		return return_value;
 	}
+
 
 
 

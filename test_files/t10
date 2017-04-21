@@ -1,0 +1,25 @@
+msg " Testing Built In Functions "
+newline
+input "Enter the value of x: " x
+msg " The current value of the x = " 
+print x 
+newline
+y = sqrt(x)
+msg " The square root value of x = " 
+print y 
+newline
+y = sin(x)
+msg " The sin of x = " 
+print y 
+newline
+y = cos(x)
+msg " The cosine of x = " 
+print y 
+newline
+y = exp(x)
+msg " The exponent of x = " 
+print y 
+newline
+
+
+ 

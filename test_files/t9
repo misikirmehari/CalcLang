@@ -1,0 +1,9 @@
+msg "Testing Keywords"
+newline
+input "Enter the Value of X: " x
+msg " The current value of x = "
+print x
+newline
+x = -x
+msg " The negative value of x = "
+print x
